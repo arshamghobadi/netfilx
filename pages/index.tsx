@@ -1,17 +1,34 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import type { NextPage, NextPageContext } from 'next';
+
+import { getSession, signOut } from 'next-auth/react';
+import Billboard from '../components/Billboard';
+import Navbar from '../components/Navbar';
+import useCurrentUser from '../hooks/useCurentUser';
+
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 const Home: NextPage = () => {
+  const { data: user } = useCurrentUser();
   return (
-    <div>
-      <Head>
-        <title>Netfilx</title>
-        <meta name="description" content="Netfilx create by aresham ghobadi" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className=" text-red-500 font-bold">heloo</main>
-    </div>
+    <>
+      <Navbar />
+      <Billboard />
+    </>
   );
 };
 

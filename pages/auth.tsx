@@ -3,13 +3,12 @@ import { useCallback, useState } from 'react';
 import Inputs from '../components/Inputs';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
+
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
-type Props = {};
+import React from 'react';
 
-function Auth({}: Props) {
-  const router = useRouter();
+const Auth = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -26,26 +25,21 @@ function Auth({}: Props) {
       await signIn('credentials', {
         email,
         password,
-        redirect: false,
-        callbackUrl: '/',
+
+        callbackUrl: '/profiles',
       });
-      router.push('/');
     } catch (error) {
       console.error(error);
     }
-  }, [email, password, router]);
+  }, [email, password]);
 
   const register = useCallback(async () => {
     try {
-      await axios.post(
-        '/api/register',
-        {
-          email,
-          name,
-          password,
-        },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      await axios.post('/api/register', {
+        email,
+        name,
+        password,
+      });
 
       login();
     } catch (error) {
@@ -74,21 +68,21 @@ function Auth({}: Props) {
               {variant === 'register' && (
                 <Inputs
                   lable="Username"
-                  onChange={(e: any) => setName(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   id="name"
                   value={name}
                 />
               )}
               <Inputs
                 lable="Email"
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 id="email"
                 type="email"
                 value={email}
               />
               <Inputs
                 lable="Password"
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 id="password"
                 type="password"
                 value={password}
@@ -100,15 +94,15 @@ function Auth({}: Props) {
             >
               {variant === 'login' ? 'Login' : 'Sign up'}
             </button>
-            <div
-              onClick={() => signIn('google', { callbackUrl: '/' })}
-              className="flex flex-row items-start gpa-4 mt-8 justify-center space-x-4"
-            >
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
+            <div className="flex flex-row items-start gpa-4 mt-8 justify-center space-x-4">
+              <div
+                onClick={() => signIn('google', { callbackUrl: '/profiles' })}
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              >
                 <FcGoogle size={30} />
               </div>
               <div
-                onClick={() => signIn('github', { callbackUrl: '/' })}
+                onClick={() => signIn('github', { callbackUrl: '/profiles' })}
                 className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
               >
                 <FaGithub size={30} />
@@ -131,6 +125,6 @@ function Auth({}: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default Auth;
