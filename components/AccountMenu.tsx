@@ -2,6 +2,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
+import useCurrentUser from '../hooks/useCurentUser';
 
 interface AccountMenuProps {
   visible?: boolean;
@@ -9,6 +10,7 @@ interface AccountMenuProps {
 
 const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
   const router = useRouter();
+  const { data } = useCurrentUser();
   if (!visible) {
     return null;
   }
@@ -29,7 +31,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
             className=" w-8 rounded-md"
           />
           <p className="text-white text-sm group-hover/item:underline">
-            UserName
+            {data?.name}
           </p>
         </div>
         <hr className=" bg-gray-600 border-0 h-px my-4" />
